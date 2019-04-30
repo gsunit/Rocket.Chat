@@ -1022,6 +1022,34 @@ export class Subscriptions extends Base {
 		return this.update(query, update, { multi: true });
 	}
 
+	updateCustomFieldsByUserId(uid, cfields) {
+		console.log("calling the function");
+		const query = { 'u._id' : uid };
+		const customFields = cfields || {};
+		const update = {
+			$set: {
+				customFields,
+			},
+		};
+
+		return this.update(query, update, { multi: true });
+	}
+
+	updateCustomFieldsByRoomIdAndUserId(rid, uid, cfields) {
+		const query = { 
+			'u._id' : uid,
+			rid,
+		 };
+		const customFields = cfields || {};
+		const update = {
+			$set: {
+				customFields,
+			},
+		};
+
+		return this.update(query, update, { multi: true });
+	}
+
 	updateTypeByRoomId(roomId, type) {
 		const query =
 			{ rid: roomId };

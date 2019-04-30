@@ -32,6 +32,7 @@ Template.membersList.helpers({
 		const onlineUsers = RoomManager.onlineUsers.get();
 		const roomUsers = Template.instance().users.get();
 		const room = ChatRoom.findOne(this.rid);
+		console.log(room);
 		const roomMuted = (room != null ? room.muted : undefined) || [];
 		const userUtcOffset = Meteor.user() && Meteor.user().utcOffset;
 		let totalOnline = 0;
@@ -63,6 +64,11 @@ Template.membersList.helpers({
 						utcOffset = `(UTC ${ utcOffset })`;
 					}
 				}
+			}
+
+			if (Template.instance().sortingMode.get() === 'userActivity') {
+				console.log(user._id, user.username, room._id);
+				Meteor.call('userActivityCounter.set', user._id, user.username, room._id);
 			}
 
 			return {
@@ -171,7 +177,8 @@ Template.membersList.events({
 		instance.filter.set(e.target.value.trim());
 	},
 	'change .js-type'(e, instance) {
-		instance.showAllUsers.set(e.currentTarget.value === 'all');
+		instance.showAllUsers.set(e.currentTarget.value !== 'online');
+		instance.sortingMode.set(e.currentTarget.value);
 		instance.usersLimit.set(100);
 	},
 	'click .js-more'(e, instance) {
@@ -274,6 +281,7 @@ Template.membersList.onCreated(function() {
 	this.total = new ReactiveVar;
 	this.loading = new ReactiveVar(true);
 	this.loadingMore = new ReactiveVar(false);
+	this.sortingMode = new ReactiveVar('online');
 
 	this.tabBar = this.data.tabBar;
 
@@ -320,10 +328,9 @@ Template.membersList.onCreated(function() {
 
 Template.membersList.onRendered(function() {
 	this.autorun(() => {
-		const showAllUsers = this.showAllUsers.get();
 		const statusTypeSelect = this.find('.js-type');
 		if (statusTypeSelect) {
-			statusTypeSelect.value = showAllUsers ? 'all' : 'online';
+			statusTypeSelect.value = this.sortingMode.get();
 		}
 	});
 });
