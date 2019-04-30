@@ -1039,6 +1039,7 @@ export class Subscriptions extends Base {
 			'u._id' : uid,
 			rid,
 		};
+		
 		const customFields = cfields || {};
 		const update = {
 			$set: {
