@@ -1023,7 +1023,6 @@ export class Subscriptions extends Base {
 	}
 
 	updateCustomFieldsByUserId(uid, cfields) {
-		console.log("calling the function");
 		const query = { 'u._id' : uid };
 		const customFields = cfields || {};
 		const update = {
@@ -1036,10 +1035,10 @@ export class Subscriptions extends Base {
 	}
 
 	updateCustomFieldsByRoomIdAndUserId(rid, uid, cfields) {
-		const query = { 
+		const query = {
 			'u._id' : uid,
 			rid,
-		 };
+		};
 		const customFields = cfields || {};
 		const update = {
 			$set: {
